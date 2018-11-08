@@ -1,0 +1,10 @@
+0 nol o
+1 satu i
+2 dua r
+3 tiga e
+4 empat a
+5 lima s
+6 enam g
+7 tujuh t
+8 delapan b
+9 sembilan g
