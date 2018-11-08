@@ -3,10 +3,16 @@ import csv
 import numpy as np
 import pandas as pd
 import pickle as pkl
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 from preprocess import Preprocessor
 
-THRESHOLD = 2
+
+word_lists = []
+hashtag_lists = []
+THRESHOLD = 10
 
 def _parse_bytes(field):
     """ Convert string represented in Python byte-string literal syntax into a
@@ -44,11 +50,9 @@ def extract_features(df, train=False):
         train_hashtags = []
         preprocessed_rows = []
         bag_of_words = {}
-        hashtag_lists = []
-        word_lists = []
 
-    for index, row in data_validation.iterrows():
-        if index >= 50:
+    for index, row in df.iterrows():
+        if index == (200 if train else 10000):
             break
         tokens, hashtag = preprocess(row['Teks'])
         targets.append(row.get('Label', []))
@@ -79,6 +83,8 @@ def extract_features(df, train=False):
         
         save_model(hashtag_lists, 'hashtag_lists.pkl')
         save_model(word_lists, 'word_lists.pkl')
+        print (hashtag_lists)
+        print (word_lists)
 
         # extract feature for train data
         for index, row in enumerate(preprocessed_rows):
@@ -91,45 +97,43 @@ def extract_features(df, train=False):
     targets = np.array(targets)
     return features, targets
 
+def svc_param_selection(features, targets, nfolds):
+    Cs = [0.001, 0.01, 0.1, 1, 10]
+    gammas = [0.001, 0.01, 0.1, 1]
+    # testing
+    print ('--Finding best parameters for SVM--')
+    param_grid = {'C': Cs, 'gamma' : gammas}
+    grid_search = GridSearchCV(SVC(kernel='rbf'), param_grid, cv=nfolds)
+    grid_search.fit(features, targets)
+    print (grid_search.best_params_)
+    print (grid_search.grid_scores_)
+    print (grid_search.cv_results_)
+    return grid_search.best_params_
+
 if __name__ == '__main__':
     df = pd.read_csv('/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend/corpus/data_latih.csv', sep=';', skiprows=0, encoding='utf-8')
-    # randomize data
-    # df = df.sample(frac=1).reset_index(drop=True)
-
-    count_train = int(0.8 * len(df))
-    count_validation = int(0.1 * len(df))
-    count_test = len(df) - count_train - count_validation
-    data_train = df[:count_train]
-    data_validation = df[count_train:count_train + count_validation].reset_index(drop=True)
-    data_test = df[count_train + count_validation:].reset_index(drop=True)
-
-    # train_features = []
-    # train_targets = []
-    validation_features = []
-    validation_targets = []
-    test_features = []
-    test_targets = []
-
-    # preprocessed_rows = []
-    # train_hashtags = []
-    # bag_of_words = {}
-    # hashtag_lists = []
-    # word_lists = []
+    # split data
+    data_train, data_test = train_test_split(df, test_size=0.1, random_state=1)
+    # data_train, data_validation = train_test_split(data_train, test_size=0.1, random_state=1)
+    data_train = data_train.reset_index(drop=True)
+    # data_validation = data_validation.reset_index(drop=True)
+    data_test = data_test.reset_index(drop=True)
 
     train_features, train_targets = extract_features(data_train, True)
+    print (train_features.shape, train_targets.shape)
 
     hashtag_lists = load_model('hashtag_lists.pkl')
     word_lists = load_model('word_lists.pkl')
 
-    validation_features, validation_targets = extract_features(data_validation, True)
-    print (validation_features.shape, validation_targets.shape)
-
-    test_features, test_targets = extract_features(data_test, True)
+    test_features, test_targets = extract_features(data_test)
     print (test_features.shape, test_targets.shape)
 
-    # Train using train_features
-    model = SVC().fit(train_features, train_targets)
+    # Train using train_features svm
+    svc_param_selection(train_features, train_targets, 10)
+    # best for now is C=10, gamma=0.1
+    model = SVC(C=10, gamma=0.1).fit(train_features, train_targets)
     save_model(model, 'classifier.pkl')
-    print (model.score(validation_features, validation_targets))
+    print (model.score(train_features, train_targets))
+    # print (model.score(validation_features, validation_targets))
     print (model.score(test_features, test_targets))
 
