@@ -9,6 +9,7 @@ NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 VOWEL = ['a', 'i', 'u', 'e', 'o']
 USERNAME_EXCEPTIONS = ['@jokowi', '@prabowo', '@sandiuno']
 PUNCTUATIONS = [',', '.', '?', ';', '!', ':', '“']
+ABSOLUTE_BACKEND_PATH = '/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend'
 
 
 class Preprocessor():
@@ -22,17 +23,17 @@ class Preprocessor():
         ...
         '''
         self.dictionary = {}
-        with open(file, 'r') as file:
+        with open('%s/%s' % (ABSOLUTE_BACKEND_PATH, file), 'r') as file:
             lines = file.read().splitlines()
             for line in lines:
                 content = line.split()
                 self.dictionary[content[0]] = content[1]
 
         # load model
-        with open('models/number_model.pkl', 'rb') as file:
+        with open('%s/models/number_model.pkl' % ABSOLUTE_BACKEND_PATH, 'rb') as file:
             self.model = pkl.load(file)
 
-        with open('dicts/number_dict.pkl', 'rb') as file:
+        with open('%s/dicts/number_dict.pkl' % ABSOLUTE_BACKEND_PATH, 'rb') as file:
             self.number_dict = pkl.load(file)
 
     def normalize_to_lower(self):
