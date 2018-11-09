@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from preprocess import Preprocessor
 
-
+preprocessor = Preprocessor()
 word_lists = []
 hashtag_lists = []
 THRESHOLD = 10
@@ -26,9 +26,9 @@ def _parse_bytes(field):
 
 def preprocess(text):
     text = _parse_bytes(text)
-    preprocessor = Preprocessor()
     tokens = preprocessor.tokenize(text)
-    tokens = preprocessor.normalize(tokens)
+    # tokens = preprocessor.normalize_once(tokens) # 1.27.7 min
+    tokens = preprocessor.normalize(tokens) # 1.25.7 min
     tokens = preprocessor.remove_stopwords(tokens)
     tokens = preprocessor.stem(tokens)
     hashtag = preprocessor.hashtag
@@ -52,8 +52,8 @@ def extract_features(df, train=False):
         bag_of_words = {}
 
     for index, row in df.iterrows():
-        if index == (200 if train else 10000):
-            break
+        # if index == (200 if train else 10000):
+        #     break
         tokens, hashtag = preprocess(row['Teks'])
         targets.append(row.get('Label', []))
 
@@ -111,28 +111,46 @@ def svc_param_selection(features, targets, nfolds):
     return grid_search.best_params_
 
 if __name__ == '__main__':
-    df = pd.read_csv('/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend/corpus/data_latih.csv', sep=';', skiprows=0, encoding='utf-8')
-    # split data
-    data_train, data_test = train_test_split(df, test_size=0.1, random_state=1)
-    # data_train, data_validation = train_test_split(data_train, test_size=0.1, random_state=1)
-    data_train = data_train.reset_index(drop=True)
-    # data_validation = data_validation.reset_index(drop=True)
-    data_test = data_test.reset_index(drop=True)
+    # df = pd.read_csv('/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend/corpus/data_latih.csv', sep=';', skiprows=0, encoding='utf-8')
+    # # split data
+    # data_train, data_test = train_test_split(df, test_size=0.1, random_state=1)
+    # # data_train, data_validation = train_test_split(data_train, test_size=0.1, random_state=1)
+    # data_train = data_train.reset_index(drop=True)
+    # # data_validation = data_validation.reset_index(drop=True)
+    # data_test = data_test.reset_index(drop=True)
 
-    train_features, train_targets = extract_features(data_train, True)
-    print (train_features.shape, train_targets.shape)
+    # train_features, train_targets = extract_features(data_train, True)
+    # save_model(train_features, 'train_features.pkl')
+    # save_model(train_targets, 'train_targets.pkl')
+    # print (train_features.shape, train_targets.shape)
 
-    hashtag_lists = load_model('hashtag_lists.pkl')
-    word_lists = load_model('word_lists.pkl')
+    # hashtag_lists = load_model('hashtag_lists.pkl')
+    # word_lists = load_model('word_lists.pkl')
 
-    test_features, test_targets = extract_features(data_test)
-    print (test_features.shape, test_targets.shape)
+    # test_features, test_targets = extract_features(data_test)
+    # save_model(test_features, 'test_features.pkl')
+    # save_model(test_targets, 'test_targets.pkl')
+    # print (test_features.shape, test_targets.shape)
+
+    train_features = load_model('train_features.pkl')
+    train_targets = load_model('train_targets.pkl')
+    test_features = load_model('test_features.pkl')
+    test_targets = load_model('test_targets.pkl')
+    # for feat in train_features:
+    #     print (feat.shape)=
+    train_targets[:664][-1] = 0
+    model = DecisionTreeClassifier().fit(train_features, train_targets)
+    print (model.score(train_features, train_targets))
+    print (model.score(test_features, test_targets))
 
     # Train using train_features svm
-    svc_param_selection(train_features, train_targets, 10)
-    # best for now is C=10, gamma=0.1
-    model = SVC(C=10, gamma=0.1).fit(train_features, train_targets)
-    save_model(model, 'classifier.pkl')
+    # try:
+    #     svc_param_selection(train_features, train_targets, 10)
+    # except:
+    #     pass
+    # best for now is C=10, gamma=0.01
+    model = SVC(C=10, gamma=0.01).fit(train_features, train_targets)
+    # save_model(model, 'classifier.pkl')
     print (model.score(train_features, train_targets))
     # print (model.score(validation_features, validation_targets))
     print (model.score(test_features, test_targets))

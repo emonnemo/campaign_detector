@@ -28,6 +28,13 @@ class Preprocessor():
                 content = line.split()
                 self.dictionary[content[0]] = content[1]
 
+        # load model
+        with open('models/number_model.pkl', 'rb') as file:
+            self.model = pkl.load(file)
+
+        with open('dicts/number_dict.pkl', 'rb') as file:
+            self.number_dict = pkl.load(file)
+
     def normalize_to_lower(self):
         self.tokens = [word.lower() for word in self.tokens]
         return self
@@ -107,17 +114,12 @@ class Preprocessor():
         for index, token in enumerate(self.tokens):
             if token in self.dictionary:
                 result[index] = self.dictionary[token]
+        self.tokens = result
         return self
 
     def normalize_number(self):
         '''
         '''
-        # load model
-        with open('models/number_model.pkl', 'rb') as file:
-            model = pkl.load(file)
-
-        with open('dicts/number_dict.pkl', 'rb') as file:
-            number_dict = pkl.load(file)
 
         result = copy.deepcopy(self.tokens)
 
@@ -133,13 +135,13 @@ class Preprocessor():
                         number_occurence.append(index)
                         # feature <number, charbefore, index, is_last, is_last_char_vowel, is_number_vowel>
                         feature = [int(char), ord(token[index-1]), index == 0, index == len(token) - 1, \
-                            (number_dict['letter'][str(token[index-1])] in VOWEL) if token[index-1] in NUMBERS else token[index-1] in VOWEL, number_dict['letter'][char] in VOWEL]
+                            (self.number_dict['letter'][str(token[index-1])] in VOWEL) if token[index-1] in NUMBERS else token[index-1] in VOWEL, self.number_dict['letter'][char] in VOWEL]
                         # feature = [int(char), ord(token[index - 1]), 1 if index == 0 else 0, 1 if index == len(token) - 1 else 0, \
                         #     1 if token[index-1] in VOWEL else 0, 1 if number_dict['letter'][char] in VOWEL else 0]
                         features.append(feature)
                 if is_contain_number:
                     features = np.array(features)
-                    prediction = model.predict(features)
+                    prediction = self.model.predict(features)
                     new_token = ''
                     old_index = -1
                     for i, index in enumerate(number_occurence):
@@ -151,9 +153,9 @@ class Preprocessor():
                             for _ in range(number - 1):
                                 new_token += tmp
                         elif target == 1:
-                            new_token += number_dict['spelling'][str(number)]
+                            new_token += self.number_dict['spelling'][str(number)]
                         elif target == 2:
-                            new_token += number_dict['letter'][str(number)]
+                            new_token += self.number_dict['letter'][str(number)]
                         old_index = index
                     new_token += token[index+1:]
                     result[idx] = new_token
@@ -169,6 +171,85 @@ class Preprocessor():
             .normalize_repeated_chars().normalize_slang().normalize_number()
 
         return self.tokens
+
+    def normalize_once(self, tokens):
+        self.hashtag = []
+
+        results = []
+        for token in tokens:
+            new_token = token.lower() # lower case
+            if 'http' not in token: # remove link
+                new_tokens = [] # hold separate token from punctuations
+                last_index = 0
+                for idx, char in enumerate(new_token):
+                    if char in PUNCTUATIONS:
+                        if False if idx == 0 else token[idx - 1] in NUMBERS and False if idx == len(new_token) - 1 else new_token[idx + 1] in NUMBERS:
+                            pass
+                        else:
+                            if new_token[last_index:idx] != '':
+                                new_tokens.append(new_token[last_index:idx])
+                            last_index = idx + 1
+                if new_token[last_index:] != '':
+                    new_tokens.append(new_token[last_index:])
+                for new_token in new_tokens:
+                    if not (new_token.startswith('@') and new_token not in USERNAME_EXCEPTIONS):
+                        if new_token.startswith('#'):
+                            self.hashtag.append(new_token)
+                        else:
+                            remove_rep_token = ''
+                            num = 0
+                            last_char = ''
+                            for char in new_token:
+                                if char == last_char:
+                                    num += 1
+                                else:
+                                    if num == 2:
+                                        remove_rep_token += last_char
+                                    remove_rep_token += char
+                                    num = 1
+                                    last_char = char
+                            
+                            if remove_rep_token in self.dictionary:
+                                remove_rep_token = self.dictionary[remove_rep_token]
+
+                            
+                            if not any(char in [',', '.'] for char in remove_rep_token) and not all(char in NUMBERS for char in remove_rep_token):
+                                features = []
+                                number_occurence = []
+                                is_contain_number = False
+                                for index, char in enumerate(remove_rep_token):
+                                    if char in NUMBERS:
+                                        is_contain_number = True
+                                        number_occurence.append(index)
+                                        # feature <number, charbefore, index, is_last, is_last_char_vowel, is_number_vowel>
+                                        feature = [int(char), ord(remove_rep_token[index-1]), index == 0, index == len(remove_rep_token) - 1, \
+                                            (self.number_dict['letter'][str(remove_rep_token[index-1])] in VOWEL) if remove_rep_token[index-1] in NUMBERS else remove_rep_token[index-1] in VOWEL, self.number_dict['letter'][char] in VOWEL]
+                                        # feature = [int(char), ord(token[index - 1]), 1 if index == 0 else 0, 1 if index == len(token) - 1 else 0, \
+                                        #     1 if token[index-1] in VOWEL else 0, 1 if number_dict['letter'][char] in VOWEL else 0]
+                                        features.append(feature)
+                                if is_contain_number:
+                                    features = np.array(features)
+                                    prediction = self.model.predict(features)
+                                    new_token = ''
+                                    old_index = -1
+                                    for i, index in enumerate(number_occurence):
+                                        new_token += token[old_index+1:index]
+                                        number = features[i][0]
+                                        target = prediction[i]
+                                        if target == 0:
+                                            tmp = new_token
+                                            for _ in range(number - 1):
+                                                new_token += tmp
+                                        elif target == 1:
+                                            new_token += self.number_dict['spelling'][str(number)]
+                                        elif target == 2:
+                                            new_token += self.number_dict['letter'][str(number)]
+                                        old_index = index
+                                    new_token += token[index+1:]
+                                else:
+                                    new_token = remove_rep_token
+                            results.append(new_token)
+        return results
 
     def remove_stopwords(self, tokens):
         return [word for word in tokens if not word in stopwords.words('indonesian')]
