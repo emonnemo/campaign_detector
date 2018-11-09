@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from campaign_detector.api import urls as api_urls
+from campaign_detector.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_urls)),
+    path('home/', home.HomeView.as_view(), name='home'),
 ]

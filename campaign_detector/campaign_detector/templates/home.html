@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <title>{% block title %}My amazing site{% endblock %}</title>
+</head>
+<body>
+    <div class='id'> halo {{ STATIC_URL }} </div>
+</body>
+{% comment %} <body>
+    <div id="sidebar">
+        {% block sidebar %}
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog/">Blog</a></li>
+        </ul>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body> {% endcomment %}
+</html>

@@ -52,10 +52,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'campaign_detector.urls'
 
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'campaign_detector/css'), )
+# STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'campaign_detector/css'))
+STATIC_URL = '/static/'
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+STATICFILES_DIRS = (
+  os.path.join(SITE_ROOT, 'static/'),
+)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'campaign_detector/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,4 +126,3 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
