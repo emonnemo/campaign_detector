@@ -1,5 +1,6 @@
 gw saya
 gua saya
+gue saya
 gwa saya
 aku saya
 ak saya
@@ -26,9 +27,12 @@ lu kamu
 lo kamu
 anda kamu
 u kamu
+ud sudah
+sdh sudah
 dah sudah
 udh sudah
 udah sudah
+suda sudah
 yg yang
 lg lagi
 d di
@@ -60,6 +64,7 @@ dpt dapat
 dgn dengan
 dg dengan
 ama dengan
+sm dengan
 emang memang
 trus lalu
 org orang
@@ -103,6 +108,7 @@ to untuk
 i saya
 and dan
 of dari
+you kamu
 hahaha haha
 wkwkwk wkwk
 jkw jokowi
