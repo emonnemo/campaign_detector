@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form id="editform" action="" method="post" class="form-horizontal"
-    onsubmit="return validateForm()">
+<form id="editform" action="" method="post">
     <div class="input-container center">
         <textarea name="input-text" class="grid-item1" 
-        placeholder="Silakan masukkan teks yang ingin dideteksi"></textarea>
+        placeholder="Silakan masukkan teks yang ingin dideteksi">{{ text_before }}</textarea>
         <button class="grid-item2 submit-button" type="submit">Cek!</button>
         <div class="grid-item3 {% if result %} result-box {% endif %}">
             <span class="result">{{ result }}</span>

@@ -21,5 +21,6 @@ from campaign_detector.views import home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_urls)),
+    path('', home.HomeView.as_view(), name='index'),
     path('home/', home.HomeView.as_view(), name='home'),
 ]
