@@ -3,7 +3,10 @@
 {% block content %}
 <form id="editform" action="" method="post">
     <div class="input-container center">
-        <textarea name="input-text" class="grid-item1" 
+        <textarea name="input-text" class="grid-item1
+        {% if '1' in result %}group-one
+        {% elif '2' in result %}group-two
+        {% else %}neutral{% endif %}" 
         placeholder="Silakan masukkan teks yang ingin dideteksi">{{ text_before }}</textarea>
         <button class="grid-item2 submit-button" type="submit">Cek!</button>
         <div class="grid-item3 {% if result %} result-box {% endif %}">
@@ -27,9 +30,17 @@
         box-sizing: border-box;
         border: 2px solid #ccc;
         border-radius: 4px;
-        background-color:white;
         resize: none;
         font-size: 15px;
+    }
+    .neutral {
+        background-color:white;
+    }
+    .group-one {
+        background-color: lightcyan;
+    }
+    .group-two {
+        background-color: beige;
     }
     .submit-button {
         margin: 10px;

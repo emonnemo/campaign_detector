@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="help-text">
+    <h3>Panduan Penggunaan Aplikasi</h3>
+    <p>
+        Aplikasi ini dapat mendeteksi kampanye terkait Pilpres 2019 pada cuitan Twitter.
+        Hasil deteksi berupa kelas "Kubu 01", "Kubu 02", atau "Non-kampanye".
+        Anda dapat memilih untuk melakukan deteksi pada cuitan acak di aplikasi Twitter
+        atau pada teks yang dimasukkan sendiri.
+    </p>
+    <p>
+        Untuk melakukan deteksi pada teks yang dimasukkan sendiri, silakan pilih menu 
+        <i class="fa fa-pencil"></i>.
+        Masukkan teks yang diinginkan pada kolom yang tersedia.
+        Lalu klik tombol "Cek!".
+        Kelas akan muncul di bawah tombol.
+        Warna latar kolom masukan dapat memudahkan Anda membedakan data hasil klasifikasi
+        karena dibuat berbeda per kelasnya.
+    </p>
+    <p>
+        Untuk melakukan deteksi pada cuitan acak di aplikasi Twitter, silakan pilih menu 
+        <i class="fa fa-twitter"></i>.
+        Klik tombol "Mulai Scrapping".
+        Sebuah tabel berisi sepuluh tweet yang telah discrap akan ditampilkan di bawah tombol
+        beserta dengan nama akun, waktu post, serta kelasnya.
+        Warna latar baris dapat memudahkan Anda membedakan data hasil klasifikasi
+        karena dibuat berbeda per kelasnya.
+    </p>
+</div>
+{% endblock %}
+
+{% block style %}
+    .help-text {
+        font-size: 18pt;
+        text-align: justify;
+    }
+    .help-text i {
+        font-size: 20pt;
+    }
+{% endblock %}

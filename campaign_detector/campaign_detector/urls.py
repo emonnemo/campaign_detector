@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from campaign_detector.api import urls as api_urls
-from campaign_detector.views import home, scrap
+from campaign_detector.views import home, scrap, help
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +24,5 @@ urlpatterns = [
     path('', home.HomeView.as_view(), name='index'),
     path('home/', home.HomeView.as_view(), name='home'),
     path('scrap/', scrap.ScrapView.as_view(), name='scrap'),
-    path('help/', home.HomeView.as_view(), name='help'),
+    path('help/', help.HelpView.as_view(), name='help'),
 ]
