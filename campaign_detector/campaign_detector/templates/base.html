@@ -2,7 +2,7 @@
 <html lang="en">
 {% load static %}
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <title>{% block title %}Detektor Kampanye{% endblock %}</title>
 </head>
 <body>
@@ -14,13 +14,13 @@
             </div>
             <div class="menu flex-space-between">
                 <a class="menu-button write" href="{% url 'home' %}">
-                    <span class=""><img src="{% static 'res/pencil.png' %}"/></span>
+                    <i class="fa fa-pencil"></i>
                 </a>
                 <a class="menu-button scrap" href="{% url 'scrap' %}">
-                    <span class=""><img src="{% static 'res/twitter.png' %}"/></span>
+                    <i class="fa fa-twitter"></i>
                 </a>
                 <a class="menu-button help" href="{% url 'help' %}">
-                    <span class=""><img src="{% static 'res/help.png' %}"/></span>
+                    <i class="fa fa-question"></i>
                 </a>
             </div>
         </div>
@@ -45,6 +45,9 @@
     h1, h2, h3 {
         margin: 0px;
     }
+    ::-webkit-scrollbar {
+        display: none;
+    }
     .page-content {
         height: 100vh;
         overflow: auto;
@@ -52,11 +55,6 @@
         width: 700px;
         margin: auto;
         padding: 20px;
-    }
-    .id {
-        font-family: 'Courier New', Courier, monospace;
-        color: blue;
-        font-size: 100;
     }
     .flex-space-between {
         display: flex;
@@ -77,18 +75,26 @@
         height: 60px;
         width: 60px;
         text-align: center;
+        font-size: 30px;
+        line-height: 60px;
     }
     .menu .write {
         border-color:gold;
         background-color: palegoldenrod;
+        color:darkorange;
     }
     .menu .scrap {
         border-color:deepskyblue;
         background-color: skyblue;
+        color:dodgerblue;
     }
     .menu .help {
         border-color:palevioletred;
         background-color: pink;
+        color:deeppink;
+    }
+    .menu-button:hover {
+        background-color: white;
     }
     #content {
         margin-top: 20px;

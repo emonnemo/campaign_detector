@@ -2,10 +2,10 @@
 
 {% block content %}
 <form id="scrapform" action="" method="post">
-    <button class="full-width" type="submit">Mulai Scrapping</button>
+    <button class="scrap-button full-width" type="submit">Mulai Scrapping</button>
 </form>
 {% if predicted_data %}
-<table class="">
+<table class="prediction-table full-width">
     <tr>
         <th>Tweet</th>
         <th>Username</th>
@@ -13,70 +13,69 @@
         <th>Prediksi</th>
     </tr>
     {% for datum in predicted_data %}
-    <tr>
+    <tr class="{% if '-' in datum.prediction %} not-campaign {% endif %}
+    {% if '1' in datum.prediction %} group-one {% endif %}
+    {% if '2' in datum.prediction %} group-two {% endif %}">
         <td>{{ datum.tweet }}</td>
         <td>{{ datum.username }}</td>
         <td>{{ datum.time }}</td>
-        <td>{{ datum.prediction }}</td>
+        <td class="text-center">{{ datum.prediction }}</td>
     </tr>
     {% endfor %}
 </table>
+{% else %}
+<div class="text-center twitter-icon"><i class="fa fa-twitter"></i></div>
 {% endif %}
 {% endblock %}
 
 {% block style %}
-    .input-container {
-        height: 200px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        border-radius: 5px;
-        background-color: gainsboro;
-    }
-    textarea[name="input-text"] {
-        padding: 12px 20px;
-        box-sizing: border-box;
-        border: 2px solid #ccc;
-        border-radius: 4px;
-        background-color:white;
-        resize: none;
-        font-size: 15px;
-    }
-    .submit-button {
-        margin: 10px;
-        background-color: gray;
-        border: 0;
+    .scrap-button {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: lightskyblue;
+        border: 3px solid deepskyblue;
         color: white;
+        text-transform: uppercase;
         font-family: "Agency FB";
-        font-size: 20px;
+        font-size: xx-large;
         cursor: pointer;
     }
-    .submit-button:hover {
-        background-color: black;
+    .scrap-button:hover {
+        background-color: deepskyblue;
+        border: 3px solid lightskyblue;
     }
-    .result-box {
-        background-color: lightgray;
-        margin: 10px;
-        margin-top: 0;
-        position: relative;
+    .prediction-table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: 2px solid;
     }
-    .result {
-        font-size: xx-large;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+    .prediction-table th {
+        background-color: mediumaquamarine;
+        border: 1px solid;
+        border-bottom: 2px solid;
+        border-color: black;
+        color: white;
+        font-size: large;
+        padding: 5px;
+    }
+    .prediction-table td {
+        border: 1px solid;
+        padding: 5px;
+    }
+    .prediction-table .not-campaign {
+        background-color: white;
+    }
+    .prediction-table .group-one {
+        background-color: lightcyan;
+    }
+    .prediction-table .group-two {
+        background-color: beige;
+    }
+    .text-center {
         text-align: center;
     }
-    .grid-item1 {
-        grid-column: 1 / 4;
-        grid-row: 1 / 4;
-    }
-    .grid-item2 {
-        grid-column: 4;
-        grid-row: 1;
-    }
-    .grid-item3 {
-        grid-column: 4;
-        grid-row: 2 / 4;
+    .twitter-icon {
+        font-size: 48pt;
+        color: skyblue;
     }
 {% endblock %}
