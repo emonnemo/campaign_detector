@@ -13,15 +13,15 @@
                 <h3 class="title">#Pemilu2019</h3>
             </div>
             <div class="menu flex-space-between">
-                <div class="menu-button write">
+                <a class="menu-button write" href="{% url 'home' %}">
                     <span class=""><img src="{% static 'res/pencil.png' %}"/></span>
-                </div>
-                <div class="menu-button scrap">
+                </a>
+                <a class="menu-button scrap" href="{% url 'scrap' %}">
                     <span class=""><img src="{% static 'res/twitter.png' %}"/></span>
-                </div>
-                <div class="menu-button help">
+                </a>
+                <a class="menu-button help" href="{% url 'help' %}">
                     <span class=""><img src="{% static 'res/help.png' %}"/></span>
-                </div>
+                </a>
             </div>
         </div>
         <div id="content">
