@@ -11,5 +11,12 @@ class HomeView(APIView):
         name = 'test'
 
         template = get_template('home.html')
-        html = template.render({'name': name})
+        html = template.render({'name': name, })
+        return HttpResponse(html)
+
+    def post(self, request, format=None):
+        name = 'non-kampanye'
+
+        template = get_template('home.html')
+        html = template.render({'result': name, })
         return HttpResponse(html)

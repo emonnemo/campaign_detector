@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <title>{% block title %}Detektor Kampanye{% endblock %}</title>
+</head>
+<body>
+    <div class="page-content">
+        <div class="flex-space-between">
+            <div class="title-box">
+                <h1 class='title'>Detektor Kampanye</h1>
+                <h3 class="title">#Pemilu2019</h3>
+            </div>
+            <div class="menu flex-space-between">
+                <div class="menu-button write">
+                    <span class=""><img src="{% static 'res/pencil.png' %}"/></span>
+                </div>
+                <div class="menu-button scrap">
+                    <span class=""><img src="{% static 'res/twitter.png' %}"/></span>
+                </div>
+                <div class="menu-button help">
+                    <span class=""><img src="{% static 'res/help.png' %}"/></span>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+{% comment %} <body>
+    <div id="sidebar">
+        {% block sidebar %}
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog/">Blog</a></li>
+        </ul>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body> {% endcomment %}
+</html>
+<style>
+    @media only screen and (max-width: 700px) {
+        body {
+            background-color: beige;
+        }
+        .page-content {
+            width: 100%;
+        }
+    }
+    body {
+        background-color:darkslategray;
+    }
+    h1, h2, h3 {
+        margin: 0px;
+    }
+    .page-content {
+        height: 100vh;
+        overflow: auto;
+        background-color:ivory;
+        width: 700px;
+        margin: auto;
+        padding: 20px;
+    }
+    .id {
+        font-family: 'Courier New', Courier, monospace;
+        color: blue;
+        font-size: 100;
+    }
+    .flex-space-between {
+        display: flex;
+        justify-content: space-between;
+    }
+    .center {
+        margin: auto;
+    }
+    .full-width {
+        width: 100%;
+    }
+    .menu {
+        width: 200px;
+    }
+    .menu-button {
+        border: 2px solid;
+        border-radius: 100%;
+        height: 60px;
+        width: 60px;
+        text-align: center;
+    }
+    .menu .write {
+        border-color:gold;
+        background-color: palegoldenrod;
+    }
+    .menu .scrap {
+        border-color:deepskyblue;
+        background-color: skyblue;
+    }
+    .menu .help {
+        border-color:palevioletred;
+        background-color: pink;
+    }
+    #content {
+        margin-top: 20px;
+    }
+    {% block style %}{% endblock %}
+</style>

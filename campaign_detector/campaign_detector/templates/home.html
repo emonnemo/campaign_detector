@@ -1,25 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-{% load static %}
-<head>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-    <title>{% block title %}My amazing site{% endblock %}</title>
-</head>
-<body>
-    <div class='id'> halo {{ STATIC_URL }} </div>
-</body>
-{% comment %} <body>
-    <div id="sidebar">
-        {% block sidebar %}
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog/">Blog</a></li>
-        </ul>
-        {% endblock %}
-    </div>
+{% extends 'base.html' %}
 
-    <div id="content">
-        {% block content %}{% endblock %}
+{% block content %}
+<form id="editform" action="" method="post" class="form-horizontal"
+    onsubmit="return validateForm()">
+    <div class="input-container center">
+        <textarea name="input-text" class="grid-item1" 
+        placeholder="Silakan masukkan teks yang ingin dideteksi"></textarea>
+        <button class="grid-item2 submit-button" type="submit">Cek!</button>
+        <div class="grid-item3 {% if result %} result-box {% endif %}">
+            <span class="result">{{ result }}</span>
+        </div>
+        </tr>
     </div>
-</body> {% endcomment %}
-</html>
+</form>
+{% endblock %}
+
+{% block style %}
+    .input-container {
+        height: 200px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+    textarea[name="input-text"] {
+        padding: 12px 20px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color:white;
+        resize: none;
+        font-size: 15px;
+    }
+    .submit-button {
+        margin: 10px;
+        background-color: gray;
+        border: 0;
+        color: white;
+        font-family: "Agency FB";
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .submit-button:hover {
+        background-color: black;
+    }
+    .result-box {
+        background-color: lightgray;
+        margin: 10px;
+        margin-top: 0;
+        position: relative;
+    }
+    .result {
+        font-size: xx-large;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    .grid-item1 {
+        grid-column: 1 / 4;
+        grid-row: 1 / 4;
+    }
+    .grid-item2 {
+        grid-column: 4;
+        grid-row: 1;
+    }
+    .grid-item3 {
+        grid-column: 4;
+        grid-row: 2 / 4;
+    }
+{% endblock %}
