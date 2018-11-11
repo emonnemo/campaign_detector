@@ -21,9 +21,9 @@ class ScrapView(APIView):
         predicted_data = []
         for idx in range(len(tweets) - 1):
             predicted_data.append({
-                'tweet' : tweets[idx],
-                'username': 'dummy',
-                'time': 'dummy',
+                'tweet' : tweets[idx]['text'],
+                'username': tweets[idx]['username'],
+                'time': tweets[idx]['time'],
                 'prediction': predictions[idx][0],
             })
 

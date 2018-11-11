@@ -26,6 +26,10 @@ class ScrapView(APIView):
             waktu = tweet.created_at
             user = tweet.user.screen_name
             label = ''
-            tweets.append(teks)
+            tweets.append({
+                'text': teks,
+                'time': waktu,
+                'username': user
+            })
 
         return Response({'tweets': tweets}, status=status.HTTP_200_OK)
