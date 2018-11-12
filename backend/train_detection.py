@@ -3,6 +3,7 @@ import csv
 import numpy as np
 import pandas as pd
 import pickle as pkl
+from django.conf import settings
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
@@ -10,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from preprocess import Preprocessor
 
+ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 preprocessor = Preprocessor()
 word_lists = []
 hashtag_lists = []
@@ -145,7 +147,7 @@ def mlp_param_selection(features, targets, nfolds):
     return grid_search.best_params_
 
 if __name__ == '__main__':
-    df = pd.read_csv('/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend/corpus/data_latih.csv', sep=';', skiprows=0, encoding='utf-8')
+    df = pd.read_csv('%s/corpus/data_latih.csv' % ABSOLUTE_BACKEND_PATH, sep=';', skiprows=0, encoding='utf-8')
     # split data
     data_train, data_test = train_test_split(df, test_size=0.1, random_state=1)
     # data_train, data_validation = train_test_split(data_train, test_size=0.1, random_state=1)

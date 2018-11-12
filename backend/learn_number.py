@@ -1,8 +1,10 @@
+from django.conf import settings
 from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 import pandas as pd
 import pickle as pkl
 
+ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 VOWEL = ['a', 'i', 'u', 'e', 'o']
 
@@ -22,7 +24,7 @@ if __name__ == '__main__':
         output = open('models/number_dict.pkl', 'wb')
         pkl.dump(number_dict, output)
     
-    df = pd.read_csv('/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend/corpus/number_corpus.csv', sep=',', skiprows=0)
+    df = pd.read_csv('%s/backend/corpus/number_corpus.csv' % ABSOLUTE_BACKEND_PATH, sep=',', skiprows=0)
     
     # feature extraction
     features = []

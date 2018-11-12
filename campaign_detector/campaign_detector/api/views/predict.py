@@ -2,18 +2,18 @@ import logging
 import pickle as pkl
 import requests
 
+from django.conf import settings
+ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 import sys
 # Add the backend folder path to the sys.path list
-sys.path.append('../../campaign_detection/backend')
+sys.path.append(ABSOLUTE_BACKEND_PATH)
 from collections import Counter
-from django.conf import settings
 from train_detection import extract_feature
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 logger = logging.getLogger(__name__)
 
 

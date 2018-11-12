@@ -1,3 +1,4 @@
+from django.conf import settings
 from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import copy
@@ -9,7 +10,7 @@ NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 VOWEL = ['a', 'i', 'u', 'e', 'o']
 USERNAME_EXCEPTIONS = ['@jokowi', '@prabowo', '@sandiuno']
 PUNCTUATIONS = [',', '.', '?', ';', '!', ':', '“']
-ABSOLUTE_BACKEND_PATH = '/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend'
+ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 
 
 class Preprocessor():
