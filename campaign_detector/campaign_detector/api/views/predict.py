@@ -6,13 +6,14 @@ import sys
 # Add the backend folder path to the sys.path list
 sys.path.append('../../campaign_detection/backend')
 from collections import Counter
+from django.conf import settings
 from train_detection import extract_feature
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-ABSOLUTE_BACKEND_PATH = '/Users/andikakusuma/Documents/Kuliah/NLP/Tubes_text/campaign_detection/backend'
+ABSOLUTE_BACKEND_PATH = settings.ABSOLUTE_BACKEND_PATH
 logger = logging.getLogger(__name__)
 
 
