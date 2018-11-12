@@ -16,7 +16,8 @@ class ScrapView(APIView):
 
     def post(self, request, format=None):
         results = ['Non-kampanye', 'Kubu 01', 'Kubu 02']
-        response = requests.get('http://localhost:8000/api/v1/predict/')
+        query = request.data.get('query', '')
+        response = requests.get('http://localhost:8000/api/v1/predict/?query=%s' % query)
         tweets = response.json().get('tweets')
         predictions = response.json().get('predictions')
         predicted_data = []

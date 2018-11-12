@@ -39,7 +39,8 @@ class PredictView(APIView):
         return Response({'tweet': tweet, 'prediction': prediction}, status=status.HTTP_200_OK)
 
     def get(self, request, format=None):
-        response = requests.get('http://localhost:8000/api/v1/scrap/')
+        query = request.GET.get('query', '')
+        response = requests.get('http://localhost:8000/api/v1/scrap/?query=%s' % query)
         tweets = response.json().get('tweets')
         predictions = []
         for tweet in tweets:

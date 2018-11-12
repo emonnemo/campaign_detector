@@ -19,8 +19,10 @@ class ScrapView(APIView):
 
     def get(self, request, format=None):
         num_tweets = request.data.get('count', 10)
+        query = request.GET.get('query', 'jokowi')
+        print (query)
         tweets = []
-        for tweet in tweepy.Cursor(api.search, q="jokowi -filter:retweets -filter:media", count= num_tweets, geocode='-7.4962531,110.2159931,600km', tweet_mode='extended').items(num_tweets): # , geocode=''
+        for tweet in tweepy.Cursor(api.search, q="%s -filter:retweets -filter:media" % query, count= num_tweets, geocode='-7.4962531,110.2159931,600km', tweet_mode='extended').items(num_tweets): # , geocode=''
             teks = tweet.full_text.encode('utf-8')
             lokasi = None if not tweet.place else tweet.place.name
             waktu = tweet.created_at
