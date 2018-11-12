@@ -18,7 +18,7 @@ class HomeView(APIView):
         results = ['Non-kampanye', 'Kubu 01', 'Kubu 02']
         text = request.data['input-text']
         response = requests.post('http://localhost:8000/api/v1/predict/', data={'tweet': text})
-        prediction = response.json().get('prediction1')[0]
+        prediction = response.json().get('prediction')
 
         template = get_template('home.html')
         html = template.render({'result': results[prediction], 'text_before': text, })

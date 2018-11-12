@@ -60,8 +60,6 @@ def extract_features(df, train=False):
         bag_of_words = {}
 
     for index, row in df.iterrows():
-        if index == (200 if train else 10000):
-            break
         tokens, hashtag = preprocess(row['Teks'])
         targets.append(row.get('Label', []))
 
@@ -108,14 +106,42 @@ def extract_features(df, train=False):
 def svc_param_selection(features, targets, nfolds):
     Cs = [0.001, 0.01, 0.1, 1, 10]
     gammas = [0.001, 0.01, 0.1, 1]
-    # testing
     print ('--Finding best parameters for SVM--')
     param_grid = {'C': Cs, 'gamma' : gammas}
     grid_search = GridSearchCV(SVC(kernel='rbf'), param_grid, cv=nfolds)
     grid_search.fit(features, targets)
     print (grid_search.best_params_)
-    print (grid_search.grid_scores_)
-    print (grid_search.cv_results_)
+    # print (grid_search.grid_scores_)
+    # print (grid_search.cv_results_)
+    return grid_search.best_params_
+
+def dtl_param_selection(features, targets, nfolds):
+    criterion = ['gini', 'entropy']
+    max_depth = [3, 5, 7, 9]
+    min_samples_split = [2, 4, 6, 8]
+    min_samples_leaf = [1, 2, 3, 4, 5]
+    print ('--Finding best parameters for DTL--')
+    param_grid = {'criterion': criterion, 'max_depth': max_depth, \
+        'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf}
+    grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=nfolds)
+    grid_search.fit(features, targets)
+    print (grid_search.best_params_)
+    # print (grid_search.grid_scores_)
+    # print (grid_search.cv_results_)
+    return grid_search.best_params_
+
+def mlp_param_selection(features, targets, nfolds):
+    learning_rate = ["constant", "invscaling", "adaptive"]
+    activation = ["logistic", "relu", "tanh"]
+    hidden_layer_sizes = [(10, 5, 5,), (10, 5,), (10,)]
+    print ('--Finding best parameters for MLP--')
+    param_grid = {'learning_rate': learning_rate, 'activation': activation, \
+        'hidden_layer_sizes': hidden_layer_sizes}
+    grid_search = GridSearchCV(MLPClassifier(verbose=0), param_grid, cv=nfolds)
+    grid_search.fit(features, targets)
+    print (grid_search.best_params_)
+    # print (grid_search.grid_scores_)
+    # print (grid_search.cv_results_)
     return grid_search.best_params_
 
 if __name__ == '__main__':
@@ -140,31 +166,37 @@ if __name__ == '__main__':
     save_model(test_targets, 'test_targets.pkl')
     print (test_features.shape, test_targets.shape)
 
-    train_features = load_model('train_features.pkl')
-    train_targets = load_model('train_targets.pkl')
-    test_features = load_model('test_features.pkl')
-    test_targets = load_model('test_targets.pkl')
-    # for feat in train_features:
-    #     print (feat.shape)=
-    train_targets[:664][-1] = 0
-    model = DecisionTreeClassifier().fit(train_features, train_targets)
+    # # These are used to lower the training time as we
+    # # keep the features and targets to files
+    # train_features = load_model('train_features.pkl')
+    # train_targets = load_model('train_targets.pkl')
+    # test_features = load_model('test_features.pkl')
+    # test_targets = load_model('test_targets.pkl')
+
+    # Train using train_features dtl
+    # dtl_param_selection(train_features, train_targets, 10)
+    # {'criterion': 'gini', 'max_depth': 9, 'min_samples_leaf': 5, 'min_samples_split': 2}
+    model = DecisionTreeClassifier(criterion='gini', max_depth=9, \
+        min_samples_leaf=5, min_samples_split=2)\
+        .fit(train_features, train_targets)
     save_model(model, 'dtl.pkl')
     print (model.score(train_features, train_targets))
     print (model.score(test_features, test_targets))
 
     # Train using train_features svm
-    # try:
-    #     svc_param_selection(train_features, train_targets, 10)
-    # except:
-    #     pass
-    # best for now is C=10, gamma=0.01
+    # svc_param_selection(train_features, train_targets, 10)
+    # {'C': 10, 'gamma': 0.01}
     model = SVC(C=10, gamma=0.01).fit(train_features, train_targets)
     save_model(model, 'svc.pkl')
     print (model.score(train_features, train_targets))
     # print (model.score(validation_features, validation_targets))
     print (model.score(test_features, test_targets))
 
-    model = MLPClassifier().fit(train_features, train_targets)
+    # Train using train_features mlp
+    # mlp_param_selection(tr1ain_features, train_targets, 10)
+    # {'activation': 'logistic', 'hidden_layer_sizes': (10,), 'learning_rate': 'constant'}
+    model = MLPClassifier(activation='logistic', hidden_layer_sizes=(10,), \
+        learning_rate='constant').fit(train_features, train_targets)
     save_model(model, 'mlp.pkl')
     print (model.score(train_features, train_targets))
     # print (model.score(validation_features, validation_targets))
